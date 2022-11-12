@@ -25,7 +25,7 @@ provider "aws" {
  */
 data "archive_file" "rental_bot_messenger_webhook" {
   type        = "zip"
-  source_file = "rental_bot_messenger_webhook"
+  source_file = local.env["GO_EXECUTABLE_NAME"]
   output_path = "rental_bot_messenger_webhook.zip"
 }
 
