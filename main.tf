@@ -23,23 +23,23 @@ provider "aws" {
 /* 
   * * Data sources
  */
-data "archive_file" "rental_bot_messenger_webhook" {
+data "archive_file" "rentals_bot_messenger_webhook" {
   type        = "zip"
   source_file = local.env["GO_EXECUTABLE_NAME"]
-  output_path = "rental_bot_messenger_webhook.zip"
+  output_path = "rentals_bot_messenger_webhook_deployment_package.zip"
 }
 
 
 /*
   * * Lambda function
 */
-resource "aws_lambda_function" "rental_bot_messenger_webhook" {
-  filename      = "rental_bot_messenger_webhook.zip"
-  function_name = "rental_bot_messenger_webhook"
-  handler       = "main"
-  role          = aws_iam_role.iam_for_rental_bot_messenger_webhook_lambda.arn
+resource "aws_lambda_function" "rentals_bot_messenger_webhook" {
+  filename      = "rentals_bot_messenger_webhook_deployment_package.zip"
+  function_name = "rentals_bot_messenger_webhook"
+  handler       = "rentals_bot_messenger_webhook"
+  role          = aws_iam_role.iam_for_rentals_bot_messenger_webhook_lambda.arn
 
-  source_code_hash = data.archive_file.rental_bot_messenger_webhook.output_base64sha256
+  source_code_hash = data.archive_file.rentals_bot_messenger_webhook.output_base64sha256
 
   runtime = "go1.x"
 
@@ -53,22 +53,22 @@ resource "aws_lambda_function" "rental_bot_messenger_webhook" {
   }
 }
 
-resource "aws_lambda_function_url" "rental_bot_messenger_webhook" {
-  function_name      = aws_lambda_function.rental_bot_messenger_webhook.function_name
+resource "aws_lambda_function_url" "rentals_bot_messenger_webhook" {
+  function_name      = aws_lambda_function.rentals_bot_messenger_webhook.function_name
   authorization_type = "NONE"
 }
 
 /*
   * * SNS topic
 */
-resource "aws_sns_topic" "rental_bot_messenger_webhook" {
-  name = "rental_bot_messenger_webhook"
+resource "aws_sns_topic" "rentals_bot_messenger_webhook" {
+  name = "rentals_bot_messenger_webhook"
 }
 
-resource "aws_sns_topic_subscription" "rental_bot_messenger_webhook" {
-  topic_arn = aws_sns_topic.rental_bot_messenger_webhook.arn
+resource "aws_sns_topic_subscription" "rentals_bot_messenger_webhook" {
+  topic_arn = aws_sns_topic.rentals_bot_messenger_webhook.arn
   protocol  = "lambda"
-  endpoint  = aws_lambda_function.rental_bot_messenger_webhook.arn
+  endpoint  = aws_lambda_function.rentals_bot_messenger_webhook.arn
 }
 
 /*
@@ -76,8 +76,8 @@ resource "aws_sns_topic_subscription" "rental_bot_messenger_webhook" {
 */
 
 
-resource "aws_iam_role" "iam_for_rental_bot_messenger_webhook_lambda" {
-  name = "iam_for_rental_bot_messenger_webhook_lambda"
+resource "aws_iam_role" "iam_for_rentals_bot_messenger_webhook_lambda" {
+  name = "iam_for_rentals_bot_messenger_webhook_lambda"
 
   # Generates temporary security credentials for the IAM role to use
   assume_role_policy = jsonencode(
