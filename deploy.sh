@@ -1,8 +1,8 @@
 # Source environment variables from .env file
 source .env
 
-# Build Go executable
-GOOS=linux go build cmd/main.go -o $GO_EXECUTABLE_NAME
+# Build Go executable and output it to $GO_EXECUTABLE_NAME
+GOOS=linux go build -o $GO_EXECUTABLE_NAME cmd/main.go
 
 # Set up infrastructure and generate deployment package
 terraform init
